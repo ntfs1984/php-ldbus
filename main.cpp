@@ -39,6 +39,8 @@ public:
     Php::Value message_iter_init_append(Php::Parameters &params);
     Php::Value message_iter_append_basic(Php::Parameters &params);
     Php::Value message_new_method_call(Php::Parameters &params);
+    Php::Value add_match(Php::Parameters &params);
+    Php::Value remove_match(Php::Parameters &params);
     Php::Value test_function(Php::Parameters &params);
 };
 
@@ -87,6 +89,18 @@ Php::Value Ldbus::connection_flush(Php::Parameters &params) {
 	dbus_connection_flush(connection);
 	if (reply_dbus!=NULL) {dbus_message_unref(reply_dbus); return true;}
 	return false;
+}
+
+Php::Value Ldbus::add_match(Php::Parameters &params) {
+	const char *match = params[0];
+	dbus_bus_add_match(connection, match, NULL);
+	return true;
+}
+
+Php::Value Ldbus::remove_match(Php::Parameters &params) {
+	const char *match = params[0];
+	dbus_bus_remove_match(connection, match, NULL);
+	return true;
 }
 
 Php::Value Ldbus::message_get_path(Php::Parameters &params) {
@@ -263,6 +277,8 @@ extern "C" {
         ldbus.method<&Ldbus::message_iter_init_append>("message_iter_init_append");
         ldbus.method<&Ldbus::message_iter_append_basic>("message_iter_append_basic");
         ldbus.method<&Ldbus::message_new_method_call>("message_new_method_call");
+        ldbus.method<&Ldbus::add_match>("add_match");
+        ldbus.method<&Ldbus::remove_match>("remove_match");
         ldbus.method<&Ldbus::test_function>("test_function");
         extension.add(std::move(ldbus));
         extension.add(Php::Constant("DBUS_TYPE_STRING", DBUS_TYPE_STRING));
