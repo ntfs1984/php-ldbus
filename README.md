@@ -51,8 +51,8 @@ while(true) {
 	}
 }
 ```
-To explore and usage your d-bus service, it should be "introspectable". If easy, when anyone wants to explore your services, it's executing method called "Introspect" like we did in previous example.
-Your service must respond within XML output, which contains special markup of your service, it's methods, properties and signals. If your service will ignore this query - dbus-viewer or any other application could report about error.
+To explore and usage your d-bus service, it should be "introspectable". If easy, when anyone wants to explore your services, it's simply executing method called "Introspect" on a way like we did in previous example.
+Your service must respond to this query within XML text, which contains special markup of your service, it's methods, properties and signals. If your service will ignore this query - dbus-viewer or any other application could report about error.
 Introspection example got from notification daemon.
 
 Using example variables, you might catch any request to any your service, and respond to query as you wish.
