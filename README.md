@@ -59,3 +59,24 @@ Using example variables, you might catch any request to any your service, and re
 
 Urgent: your PHP application must be designed to periodically check for incoming messages. These operations are sync, running in main thread, so your application will be blocked for some small time.
 
+c) Watch for signal
+```php
+<?php
+$dbus = new Ldbus(DBUS_BUS_SESSION); // Make new instance. After creating instance - you now connected to d-bus
+$rule = "type='signal',interface='org.freedesktop.Notifications',member='NotificationClosed'"; // We will watch for signal called NotificationClosed - when we are closing any popup notification
+$dbus->add_match($rule);
+while(true) {
+	if ($dbus->connection_pop_message()) {
+		$path = $dbus->message_get_path();
+		$dest = $dbus->message_get_destination();
+		$type = $dbus->message_get_type();
+		$intrf = $dbus->message_get_interface();
+		$member = $dbus->message_get_member();
+		$parameters = $dbus->message_get_parameters();
+		echo "Message path: $path; destination: $dest; type: $type; interface: $intrf; member: $member; parameters: ";print_r($parameters);echo "\n";
+	}
+}
+$dbus->remove_match($rule);
+```
+As you see, we are using almost the same functions like at previous example, but this time we telling system, that we want watch only some messages: for signal, and for specific interface.
+Notice: after you done, you should remove_match, to reset filters.
